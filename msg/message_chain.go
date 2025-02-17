@@ -1,41 +1,13 @@
 package msg
 
+func NewGroupChain() *GroupMessageChain {
+	return &GroupMessageChain{
+		Messages: []CommonMessage{},
+	}
+}
+
 type GroupMessageChain struct {
-	*MessageChain
-}
-
-func NewGroupChain(targetId int64) *MessageChain {
-	return &MessageChain{
-		Messages: []CommonMessage{},
-		fromId:   0,
-		targetId: targetId,
-	}
-}
-
-func NewPrivateChain(targetId int64) *MessageChain {
-	return &MessageChain{
-		Messages: []CommonMessage{},
-		fromId:   0,
-		targetId: targetId,
-	}
-}
-
-// NewReceivedChain 用于构建接收到的消息链
-// fromId 为发送者的QQ号
-// targetId 为接收者的QQ号
-func NewReceivedChain(fromId int64, targetId int64) *MessageChain {
-	return &MessageChain{
-		Messages: []CommonMessage{},
-		fromId:   fromId,
-		targetId: targetId,
-	}
-}
-
-type MessageChain struct {
 	Messages []CommonMessage `json:"messages"`
-
-	fromId   int64 // 消息来源
-	targetId int64 // 消息去路
 }
 
 type JsonTypeMessage struct {
@@ -43,15 +15,7 @@ type JsonTypeMessage struct {
 	Data map[string]interface{} `json:"data"`
 }
 
-func (receiver *MessageChain) GetFromId() int64 {
-	return receiver.fromId
-}
-
-func (receiver *MessageChain) GetTargetId() int64 {
-	return receiver.targetId
-}
-
-func (receiver *MessageChain) ToPath() string {
+func (receiver *GroupMessageChain) ToPath() string {
 	resStr := ""
 	for _, message := range receiver.Messages {
 		switch message.MessageType {
@@ -73,7 +37,7 @@ func (receiver *MessageChain) ToPath() string {
 	return resStr
 }
 
-func (receiver *MessageChain) ToString() string {
+func (receiver *GroupMessageChain) ToString() string {
 	resStr := ""
 	for _, message := range receiver.Messages {
 		switch message.MessageType {
@@ -95,7 +59,7 @@ func (receiver *MessageChain) ToString() string {
 	return resStr
 }
 
-func (receiver *MessageChain) ToJsonTypeMessage() []JsonTypeMessage {
+func (receiver *GroupMessageChain) ToJsonTypeMessage() []JsonTypeMessage {
 	message := make([]JsonTypeMessage, 0)
 
 	for _, commonMessage := range receiver.Messages {
@@ -138,7 +102,7 @@ func (receiver *MessageChain) ToJsonTypeMessage() []JsonTypeMessage {
 	return message
 }
 
-func (receiver *MessageChain) appendByType(messageType, messageKey, messageValue string) *MessageChain {
+func (receiver *GroupMessageChain) appendByType(messageType, messageKey, messageValue string) *GroupMessageChain {
 	receiver.Messages = append(receiver.Messages, CommonMessage{
 		MessageType:    messageType,
 		MessageContent: map[string]interface{}{messageKey: messageValue},
@@ -146,28 +110,28 @@ func (receiver *MessageChain) appendByType(messageType, messageKey, messageValue
 	return receiver
 }
 
-func (receiver *MessageChain) Text(content string) *MessageChain {
+func (receiver *GroupMessageChain) Text(content string) *GroupMessageChain {
 	return receiver.appendByType("text", "text", content)
 }
 
-func (receiver *MessageChain) Image(file string) *MessageChain {
+func (receiver *GroupMessageChain) Image(file string) *GroupMessageChain {
 	return receiver.appendByType("image", "file", file)
 }
 
-func (receiver *MessageChain) Record(file string) *MessageChain {
+func (receiver *GroupMessageChain) Record(file string) *GroupMessageChain {
 	return receiver.appendByType("record", "file", file)
 }
 
-func (receiver *MessageChain) At(qq string) *MessageChain {
+func (receiver *GroupMessageChain) At(qq string) *GroupMessageChain {
 	return receiver.appendByType("at", "qq", qq)
 }
 
 // Reply 通过消息id回复
-func (receiver *MessageChain) Reply(id string) *MessageChain {
+func (receiver *GroupMessageChain) Reply(id string) *GroupMessageChain {
 	return receiver.appendByType("reply", "id", id)
 }
 
-func (receiver *MessageChain) Face(id string) *MessageChain {
+func (receiver *GroupMessageChain) Face(id string) *GroupMessageChain {
 
 	// 关于id和表情的对应
 	// https://github.com/kyubotics/coolq-http-api/wiki/%E8%A1%A8%E6%83%85-CQ-%E7%A0%81-ID-%E8%A1%A8
