@@ -60,14 +60,13 @@ func processGroupMsg(be *BotEngine, message []message, userId, groupId, messageI
 	}
 
 	be.groupMessageChannels[groupId] <- &msg.GroupMessageContext{
-		MessageContext: msg.MessageContext{
-			BotAccount:        botAccount,
-			MessageType:       msg.GroupMsg,
-			MessageId:         messageId,
-			GroupMessageChain: groupChain,
-			UserId:            userId,
-			GroupId:           groupId,
-		}}
+		BotAccount:        botAccount,
+		MessageType:       msg.GroupMsg,
+		MessageId:         messageId,
+		GroupMessageChain: groupChain,
+		UserId:            userId,
+		GroupId:           groupId,
+	}
 
 }
 
