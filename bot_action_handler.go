@@ -21,7 +21,7 @@ func (c *actionHandler) OnPing(socket *gws.Conn, payload []byte) {
 }
 
 func (c *actionHandler) OnPong(socket *gws.Conn, payload []byte) {
-	fmt.Println("pong", string(payload))
+	//fmt.Println("pong", string(payload))
 
 }
 
