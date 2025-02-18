@@ -1,7 +1,6 @@
 package onebotClient
 
 import (
-	"fmt"
 	"github.com/lxzan/gws"
 )
 
@@ -18,11 +17,11 @@ func (c *eventHandler) OnClose(socket *gws.Conn, err error) {
 }
 
 func (c *eventHandler) OnPing(socket *gws.Conn, payload []byte) {
-	fmt.Println(string(payload))
+	//fmt.Println(string(payload))
 }
 
 func (c *eventHandler) OnPong(socket *gws.Conn, payload []byte) {
-	fmt.Println(string(payload))
+	//fmt.Println(string(payload))
 
 }
 
