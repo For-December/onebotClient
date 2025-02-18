@@ -23,7 +23,7 @@ func (be *BotEngine) runEventDispatcher() {
 
 }
 
-func processGroupMsg(be *BotEngine, message []message, fromId, targetId, messageId int64, botAccount int64) {
+func processGroupMsg(be *BotEngine, message []message, userId, groupId, messageId int64, botAccount int64) {
 
 	groupChain := msg.NewGroupChain()
 
@@ -49,18 +49,18 @@ func processGroupMsg(be *BotEngine, message []message, fromId, targetId, message
 		}
 	}
 
-	if _, ok := be.groupMessageChannels[targetId]; !ok {
+	if _, ok := be.groupMessageChannels[groupId]; !ok {
 		panic("group channel not found!")
 	}
 
-	be.groupMessageChannels[targetId] <- &msg.GroupMessageContext{
+	be.groupMessageChannels[groupId] <- &msg.GroupMessageContext{
 		MessageContext: msg.MessageContext{
 			BotAccount:        botAccount,
 			MessageType:       msg.GroupMsg,
 			MessageId:         messageId,
 			GroupMessageChain: groupChain,
-			FromId:            fromId,
-			TargetId:          targetId,
+			UserId:            userId,
+			GroupId:           groupId,
 		}}
 
 }

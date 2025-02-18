@@ -22,7 +22,8 @@ func (e EchoPlugin) GetPluginHandler() onebotClient.PluginHandler {
 
 	return func(api onebotClient.BotActionAPIInterface, ctx *msg.GroupMessageContext) (done bool) {
 
-		fmt.Println(ctx)
+		fmt.Println(ctx.GroupMessageChain.Messages)
+		api.SendGroupMessage(ctx.GroupId, ctx.GroupMessageChain)
 		return true
 	}
 }

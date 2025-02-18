@@ -10,8 +10,8 @@ type MessageContext struct {
 	MessageId         int64              `json:"message_id"`
 	GroupMessageChain *GroupMessageChain `json:"message_chain"`
 
-	FromId   int64 // 消息来源
-	TargetId int64 // 消息去路
+	UserId  int64
+	GroupId int64
 
 	// 内部路由使用
 	Params map[string]string

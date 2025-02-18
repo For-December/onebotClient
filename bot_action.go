@@ -5,6 +5,7 @@ import (
 	"github.com/lxzan/gws"
 	"net/http"
 	"os"
+	"sync"
 )
 
 func (be *BotEngine) createActionClient() *gws.Conn {
@@ -25,8 +26,13 @@ func (be *BotEngine) createActionClient() *gws.Conn {
 }
 
 func (be *BotEngine) startChannelPluginListeners() {
+	waitGroup := &sync.WaitGroup{}
+	waitGroup.Add(1)
+	defer waitGroup.Done()
 	for _, grp := range be.listeningGroups {
-		go func(group int64) {
+		go func(group int64, wg *sync.WaitGroup) {
+			wg.Add(1)
+			defer wg.Done()
 			api := NewBotActionAPI(group, be)
 			for {
 				// 每个群对应一个goroutine
@@ -46,6 +52,8 @@ func (be *BotEngine) startChannelPluginListeners() {
 
 				}
 			}
-		}(grp)
+		}(grp, waitGroup)
 	}
+
+	waitGroup.Wait()
 }

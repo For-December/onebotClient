@@ -56,12 +56,13 @@ func (be *BotEngine) RunLoopWithGroups(listeningGroups []int64) {
 	eventClient := be.createEventClient()
 	actionClient := be.createActionClient()
 
-	be.runEventDispatcher()
+	go eventClient.ReadLoop()
+	go actionClient.ReadLoop()
+
+	go be.runEventDispatcher()
+	go be.runActionDispatcher(actionClient)
 
 	be.buildCustomPluginsTrie()
 	be.startChannelPluginListeners()
-
-	go eventClient.ReadLoop()
-	go actionClient.ReadLoop()
 
 }

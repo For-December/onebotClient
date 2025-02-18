@@ -8,21 +8,18 @@ import (
 )
 
 type botActionAPIImpl struct {
-	botAccount               int64
-	groupId                  int64
-	BotActionRequestChannel  chan BotAction
-	BotActionResponseChannel chan []byte
-	be                       *BotEngine
+	botAccount int64
+	groupId    int64
+	be         *BotEngine
 }
 
 var _ BotActionAPIInterface = (*botActionAPIImpl)(nil)
 
 func NewBotActionAPI(groupId int64, be *BotEngine) BotActionAPIInterface {
 	return &botActionAPIImpl{
-		botAccount:               111,
-		groupId:                  groupId,
-		BotActionRequestChannel:  be.botActionRequestChannel,
-		BotActionResponseChannel: be.rawBotActionResponseChannel,
+		botAccount: 111,
+		groupId:    groupId,
+		be:         be,
 	}
 }
 
@@ -52,7 +49,7 @@ func (receiver *botActionAPIImpl) SendGroupMessage(
 		echoMsg)
 
 	// 发送消息
-	receiver.BotActionRequestChannel <- botAction
+	receiver.be.botActionRequestChannel <- botAction
 
 	// 如果设置了回调则处理结果
 	if len(callback) > 0 {
@@ -65,7 +62,7 @@ func (receiver *botActionAPIImpl) solveSentRes(echoMsg string, callback []func(m
 	go func() {
 		for {
 			select {
-			case actionResult := <-receiver.BotActionResponseChannel:
+			case actionResult := <-receiver.be.rawBotActionResponseChannel:
 				event := BotActionResult{}
 
 				if err := json.Unmarshal(actionResult, &event); err != nil {
@@ -85,7 +82,7 @@ func (receiver *botActionAPIImpl) solveSentRes(echoMsg string, callback []func(m
 				}
 
 				// 不是所需要的，重新放入channel
-				receiver.BotActionResponseChannel <- actionResult
+				receiver.be.rawBotActionResponseChannel <- actionResult
 				continue
 
 			}
@@ -97,7 +94,7 @@ func (receiver *botActionAPIImpl) RecallMessage(messageId int64) {
 
 	echoMsg := fmt.Sprintf("recall_%d", messageId)
 
-	receiver.BotActionRequestChannel <- NewBotAction(
+	receiver.be.botActionRequestChannel <- NewBotAction(
 		receiver.botAccount,
 		"delete_msg",
 		map[string]int64{
