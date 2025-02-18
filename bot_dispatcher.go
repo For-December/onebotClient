@@ -4,20 +4,33 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/For-December/onebotClient/msg"
+	"time"
 )
 
 func init() {
 
 }
 
-func (be *BotEngine) runEventDispatcher() {
+func (be *BotEngine) runDispatcherLoop() {
 	// 多个调度器处理对应channel数据，每个bot一个channel
 	// 通道传参，实际上是指针传递，因为通道本事是指针
 	for {
 		select {
 		case rawMsg := <-be.rawBotEventChannel: // 不同的bot用不同的协程
 			// msg有个self id字段，因此可以不必传botAccount
-			dispatcher(be, rawMsg)
+			actionDispatcher(be, rawMsg)
+		case botAction := <-be.botActionRequestChannel: // bot 行为
+			if actionBytes, err := json.Marshal(&botAction); err != nil {
+				panic(err)
+			} else if err = be.actionClient.WriteString(string(actionBytes)); err != nil {
+				panic(err)
+			}
+		//case <-botActionResponseChannel: // bot 行为结果
+		// 其他地方接收
+
+		default:
+			println("no msg or action")
+			time.Sleep(500 * time.Microsecond)
 		}
 	}
 
@@ -71,7 +84,7 @@ func processGroupMsg(be *BotEngine, message []message, userId, groupId, messageI
 }
 
 // 将消息解析后调度到对应群的channel
-func dispatcher(be *BotEngine, rawMsg []byte) {
+func actionDispatcher(be *BotEngine, rawMsg []byte) {
 	event := botEvent{}
 	err := json.Unmarshal(rawMsg, &event)
 	if err != nil {

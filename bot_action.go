@@ -8,7 +8,7 @@ import (
 	"sync"
 )
 
-func (be *BotEngine) createActionClient() *gws.Conn {
+func (be *BotEngine) runActionLoop() {
 	client, _, err := gws.NewClient(&actionHandler{be: be}, &gws.ClientOption{
 		Addr: be.wsEndpoint + "/api",
 		RequestHeader: http.Header{
@@ -22,7 +22,7 @@ func (be *BotEngine) createActionClient() *gws.Conn {
 		os.Exit(1)
 	}
 
-	return client
+	client.ReadLoop()
 }
 
 func (be *BotEngine) startChannelPluginListeners() {

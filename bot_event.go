@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func (be *BotEngine) createEventClient() *gws.Conn {
+func (be *BotEngine) runEventLoop() {
 	client, _, err := gws.NewClient(&eventHandler{be: be}, &gws.ClientOption{
 		Addr: be.wsEndpoint + "/event",
 		RequestHeader: http.Header{
@@ -21,7 +21,7 @@ func (be *BotEngine) createEventClient() *gws.Conn {
 		os.Exit(1)
 	}
 
-	return client
+	client.ReadLoop()
 }
 
 func (be *BotEngine) buildCustomPluginsTrie() {

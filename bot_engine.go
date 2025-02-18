@@ -2,12 +2,16 @@ package onebotClient
 
 import (
 	"github.com/For-December/onebotClient/msg"
+	"github.com/lxzan/gws"
 )
 
 type BotEngine struct {
 	plugins       []PluginInterface
 	wsEndpoint    string
 	authorization string
+
+	actionClient *gws.Conn
+	eventClient  *gws.Conn
 
 	rawBotEventChannel chan []byte
 
@@ -53,14 +57,10 @@ func (be *BotEngine) RunLoopWithGroups(listeningGroups []int64) {
 	be.botActionRequestChannel = make(chan BotAction, 1024)
 	be.rawBotActionResponseChannel = make(chan []byte, 1024)
 
-	eventClient := be.createEventClient()
-	actionClient := be.createActionClient()
+	go be.runEventLoop()
+	go be.runActionLoop()
 
-	go eventClient.ReadLoop()
-	go actionClient.ReadLoop()
-
-	go be.runEventDispatcher()
-	go be.runActionDispatcher(actionClient)
+	go be.runDispatcherLoop()
 
 	be.buildCustomPluginsTrie()
 	be.startChannelPluginListeners()
