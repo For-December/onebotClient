@@ -1,13 +1,15 @@
 package msg
 
+import "fmt"
+
 func NewGroupChain() *GroupMessageChain {
 	return &GroupMessageChain{
-		Messages: []CommonMessage{},
+		messages: []CommonMessage{},
 	}
 }
 
 type GroupMessageChain struct {
-	Messages []CommonMessage `json:"messages"`
+	messages []CommonMessage
 }
 
 type JsonTypeMessage struct {
@@ -17,7 +19,7 @@ type JsonTypeMessage struct {
 
 func (receiver *GroupMessageChain) ToPath() string {
 	resStr := ""
-	for _, message := range receiver.Messages {
+	for _, message := range receiver.messages {
 		switch message.MessageType {
 		case "text":
 			resStr += " " + message.MessageContent["text"].(string)
@@ -37,9 +39,21 @@ func (receiver *GroupMessageChain) ToPath() string {
 	return resStr
 }
 
+func (receiver *GroupMessageChain) Size() int {
+	return len(receiver.messages)
+}
+
+func (receiver *GroupMessageChain) Get(idx int) CommonMessage {
+	if idx < 0 || idx >= len(receiver.messages) {
+		fmt.Println("Get message chain out of range: ", idx)
+		return CommonMessage{}
+	}
+	return receiver.messages[idx]
+}
+
 func (receiver *GroupMessageChain) ToString() string {
 	resStr := ""
-	for _, message := range receiver.Messages {
+	for _, message := range receiver.messages {
 		switch message.MessageType {
 		case "text":
 			resStr += message.MessageContent["text"].(string)
@@ -62,7 +76,7 @@ func (receiver *GroupMessageChain) ToString() string {
 func (receiver *GroupMessageChain) ToJsonTypeMessage() []JsonTypeMessage {
 	message := make([]JsonTypeMessage, 0)
 
-	for _, commonMessage := range receiver.Messages {
+	for _, commonMessage := range receiver.messages {
 		switch commonMessage.MessageType {
 		case "text":
 			message = append(message, JsonTypeMessage{
@@ -103,7 +117,7 @@ func (receiver *GroupMessageChain) ToJsonTypeMessage() []JsonTypeMessage {
 }
 
 func (receiver *GroupMessageChain) appendByType(messageType, messageKey, messageValue string) *GroupMessageChain {
-	receiver.Messages = append(receiver.Messages, CommonMessage{
+	receiver.messages = append(receiver.messages, CommonMessage{
 		MessageType:    messageType,
 		MessageContent: map[string]interface{}{messageKey: messageValue},
 	})
