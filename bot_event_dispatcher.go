@@ -25,6 +25,11 @@ func (be *BotEngine) runEventDispatcher() {
 
 func processGroupMsg(be *BotEngine, message []message, userId, groupId, messageId int64, botAccount int64) {
 
+	if !IsTargetInArray(groupId, be.listeningGroups) {
+		fmt.Println("unListen group msg, groupId is: ", groupId)
+		return
+	}
+
 	groupChain := msg.NewGroupChain()
 
 	for _, s := range message {
@@ -46,7 +51,7 @@ func processGroupMsg(be *BotEngine, message []message, userId, groupId, messageI
 		default:
 			println(fmt.Sprintln("no such message type: ", s.Type))
 			fmt.Println(s)
-			continue
+			return
 		}
 	}
 
