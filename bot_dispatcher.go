@@ -29,7 +29,7 @@ func (be *BotEngine) runDispatcherLoop() {
 		// 其他地方接收
 
 		default:
-			println("no msg or action")
+			//println("no msg or action")
 			time.Sleep(500 * time.Microsecond)
 		}
 	}
