@@ -44,8 +44,9 @@ func processGroupMsg(be *BotEngine, message []message, userId, groupId, messageI
 			groupChain.Face(s.Data["id"].(string))
 
 		default:
-			panic(fmt.Sprintln("no such message type: ", s.Type))
-			//continue
+			println(fmt.Sprintln("no such message type: ", s.Type))
+			fmt.Println(s)
+			continue
 		}
 	}
 
