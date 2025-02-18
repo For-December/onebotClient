@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/For-December/onebotClient"
 	"github.com/For-December/onebotClient/msg"
 )
@@ -9,19 +10,19 @@ type EchoPlugin struct {
 }
 
 func (e EchoPlugin) GetPaths() []string {
-	//TODO implement me
-	panic("implement me")
+	return []string{"!!"}
 }
 
 func (e EchoPlugin) GetPluginInfo() string {
 	//TODO implement me
-	panic("implement me")
+	return "测试插件"
 }
 
 func (e EchoPlugin) GetPluginHandler() onebotClient.PluginHandler {
 
-	return func(api onebotClient.BotActionAPIInterface, ctx *msg.MessageContext) (done bool) {
-		api.SendGroupMessage(111, ctx.GroupMessageChain)
+	return func(api onebotClient.BotActionAPIInterface, ctx *msg.GroupMessageContext) (done bool) {
+
+		fmt.Println(ctx)
 		return true
 	}
 }

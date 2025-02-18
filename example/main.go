@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	engine := onebotClient.NewBotEngine()
+	engine := onebotClient.DefaultBotEngine()
 	engine.RegisterGroupPlugins(EchoPlugin{})
-	engine.RunLoop()
+	engine.RunLoopWithGroups([]int64{472737616})
 }
