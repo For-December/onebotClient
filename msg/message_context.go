@@ -1,10 +1,6 @@
 package msg
 
 type GroupMessageContext struct {
-	MessageContext
-}
-
-type MessageContext struct {
 	BotAccount        int64              `json:"bot_account"`
 	MessageType       MessageType        `json:"message_type"`
 	MessageId         int64              `json:"message_id"`
