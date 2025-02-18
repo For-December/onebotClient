@@ -9,7 +9,8 @@ import (
 )
 
 func (be *BotEngine) runActionLoop() {
-	client, _, err := gws.NewClient(&actionHandler{be: be}, &gws.ClientOption{
+	var err error
+	be.actionClient, _, err = gws.NewClient(&actionHandler{be: be}, &gws.ClientOption{
 		Addr: be.wsEndpoint + "/api",
 		RequestHeader: http.Header{
 			"Authorization": []string{be.authorization},
@@ -21,8 +22,8 @@ func (be *BotEngine) runActionLoop() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	be.actionClient.ReadLoop()
 
-	client.ReadLoop()
 }
 
 func (be *BotEngine) startChannelPluginListeners() {

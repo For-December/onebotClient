@@ -8,7 +8,8 @@ import (
 )
 
 func (be *BotEngine) runEventLoop() {
-	client, _, err := gws.NewClient(&eventHandler{be: be}, &gws.ClientOption{
+	var err error
+	be.eventClient, _, err = gws.NewClient(&eventHandler{be: be}, &gws.ClientOption{
 		Addr: be.wsEndpoint + "/event",
 		RequestHeader: http.Header{
 			"Authorization": []string{be.authorization},
@@ -21,7 +22,7 @@ func (be *BotEngine) runEventLoop() {
 		os.Exit(1)
 	}
 
-	client.ReadLoop()
+	be.eventClient.ReadLoop()
 }
 
 func (be *BotEngine) buildCustomPluginsTrie() {
