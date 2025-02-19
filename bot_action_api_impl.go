@@ -43,7 +43,7 @@ func (receiver *botActionAPIImpl) SendGroupCqMessage(groupId int64, cqMessage st
 		TParam{
 			GroupId:    groupId,
 			Message:    cqMessage,
-			AutoEscape: true,
+			AutoEscape: false,
 		},
 		echoMsg)
 
