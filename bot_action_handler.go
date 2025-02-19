@@ -1,6 +1,7 @@
 package onebotClient
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/lxzan/gws"
 )
@@ -27,5 +28,14 @@ func (c *actionHandler) OnPong(socket *gws.Conn, payload []byte) {
 
 func (c *actionHandler) OnMessage(socket *gws.Conn, message *gws.Message) {
 
-	c.be.rawBotActionResponseChannel <- message.Bytes()
+	res := BotActionResult{}
+	if err := json.Unmarshal(message.Bytes(), &res); err != nil {
+		return
+	}
+
+	if res.Echo == "" {
+		panic(res)
+		return
+	}
+	c.be.handleActionResult(res)
 }

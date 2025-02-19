@@ -19,12 +19,12 @@ func (be *BotEngine) runDispatcherLoop() {
 		case rawMsg := <-be.rawBotEventChannel: // 不同的bot用不同的协程
 			// msg有个self id字段，因此可以不必传botAccount
 			actionDispatcher(be, rawMsg)
-		case botAction := <-be.botActionRequestChannel: // bot 行为
-			if actionBytes, err := json.Marshal(&botAction); err != nil {
-				panic(err)
-			} else if err = be.actionClient.WriteString(string(actionBytes)); err != nil {
-				panic(err)
-			}
+		//case botAction := <-be.botActionRequestChannel: // bot 行为
+		//	if actionBytes, err := json.Marshal(&botAction); err != nil {
+		//		panic(err)
+		//	} else if err = be.actionClient.WriteString(string(actionBytes)); err != nil {
+		//		panic(err)
+		//	}
 		//case <-botActionResponseChannel: // bot 行为结果
 		// 其他地方接收
 

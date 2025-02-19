@@ -15,13 +15,15 @@ type BotEngine struct {
 
 	rawBotEventChannel chan []byte
 
-	botActionRequestChannel     chan BotAction
-	rawBotActionResponseChannel chan []byte
+	//botActionRequestChannel     chan BotAction
+	rawBotActionChannel chan []byte
 
 	groupMessageChannels map[int64]chan *msg.GroupMessageContext
 	listeningGroups      []int64
 
 	groupTrie *RouteTrie
+
+	actionRequests map[string]func(botAction BotActionResult)
 }
 
 func DefaultBotEngine() *BotEngine {
@@ -54,8 +56,10 @@ func (be *BotEngine) RunLoopWithGroups(listeningGroups []int64) {
 
 	be.rawBotEventChannel = make(chan []byte, 4096)
 
-	be.botActionRequestChannel = make(chan BotAction, 1024)
-	be.rawBotActionResponseChannel = make(chan []byte, 1024)
+	//be.botActionRequestChannel = make(chan BotAction, 1024)
+	be.rawBotActionChannel = make(chan []byte, 1024)
+
+	be.actionRequests = make(map[string]func(botAction BotActionResult))
 
 	go be.runEventLoop()
 	go be.runActionLoop()

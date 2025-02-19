@@ -1,37 +1,26 @@
 package onebotClient
 
 // BotAction 通过接口避免直接创建对象
-type BotAction interface {
-	GetAccount() int64
-}
-type botActionImpl struct {
-	BotAccount int64
-	Action     string      `json:"action"`
-	Params     interface{} `json:"params"`
-	Echo       string      `json:"echo"`
+type BotAction struct {
+	Action string      `json:"action"`
+	Params interface{} `json:"params"`
+	Echo   string      `json:"echo"`
 }
 
-func (b botActionImpl) GetAccount() int64 {
-	return b.BotAccount
-}
-
-func NewBotAction(botAccount int64, action string, params interface{}, echo string) BotAction {
-	return botActionImpl{
-		BotAccount: botAccount,
-		Action:     action,
-		Params:     params,
-		Echo:       echo,
+func NewBotAction(action string, params interface{}, echo string) BotAction {
+	return BotAction{
+		Action: action,
+		Params: params,
+		Echo:   echo,
 	}
 
 }
 
 type BotActionResult struct {
-	Status  string `json:"status"`
-	Retcode int    `json:"retcode"`
-	Data    struct {
-		MessageId int64 `json:"message_id"`
-	} `json:"data"`
-	Echo string `json:"echo"`
+	Status  string                 `json:"status"`
+	Retcode int                    `json:"retcode"`
+	Data    map[string]interface{} `json:"data"`
+	Echo    string                 `json:"echo"`
 }
 
 type HeartBeat struct {
