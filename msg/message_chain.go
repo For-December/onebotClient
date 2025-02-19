@@ -51,6 +51,28 @@ func (receiver *GroupMessageChain) Get(idx int) CommonMessage {
 	return receiver.messages[idx]
 }
 
+func (receiver *GroupMessageChain) ToCqStr() string {
+	resStr := ""
+	for _, message := range receiver.messages {
+		switch message.MessageType {
+		case "text":
+			resStr += message.MessageContent["text"].(string)
+		case "image":
+			resStr += "[CQ:image,id=" + message.MessageContent["file"].(string) + "]"
+		case "record":
+			resStr += "[CQ:record,id=" + message.MessageContent["file"].(string) + "]"
+		case "at":
+			resStr += "[CQ:at,qq=" + message.MessageContent["qq"].(string) + "]"
+		case "reply":
+			resStr += "[CQ:reply,id=" + message.MessageContent["id"].(string) + "]"
+		case "face":
+			resStr += "[CQ:face,id=" + message.MessageContent["id"].(string) + "]"
+		}
+		//resStr += "\n"
+	}
+	return resStr
+}
+
 func (receiver *GroupMessageChain) ToString() string {
 	resStr := ""
 	for _, message := range receiver.messages {
