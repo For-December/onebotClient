@@ -27,6 +27,36 @@ func (receiver *botActionAPIImpl) GetBotAccount() int64 {
 	return receiver.botAccount
 }
 
+func (receiver *botActionAPIImpl) SendGroupCqMessage(groupId int64, cqMessage string, callback ...func(messageId int64)) {
+
+	type TParam struct {
+		GroupId    int64  `json:"group_id"`
+		Message    string `json:"message"`
+		AutoEscape bool   `json:"auto_escape"`
+	}
+
+	// 微秒时间戳，带上bot标识，理论上不会重复
+	echoMsg := fmt.Sprintf("group_message_%d_%d", receiver.botAccount, time.Now().UnixMicro())
+	botAction := NewBotAction(
+		receiver.GetBotAccount(),
+		"send_group_msg",
+		TParam{
+			GroupId:    groupId,
+			Message:    cqMessage,
+			AutoEscape: true,
+		},
+		echoMsg)
+
+	// 发送消息
+	receiver.be.botActionRequestChannel <- botAction
+
+	// 如果设置了回调则处理结果
+	if len(callback) > 0 {
+		receiver.solveSentRes(echoMsg, callback)
+	}
+
+}
+
 func (receiver *botActionAPIImpl) SendGroupMessage(
 	groupId int64, chain *msg.GroupMessageChain, callback ...func(messageId int64)) {
 
