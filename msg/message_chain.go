@@ -58,9 +58,9 @@ func (receiver *GroupMessageChain) ToCqStr() string {
 		case "text":
 			resStr += message.MessageContent["text"].(string)
 		case "image":
-			resStr += "[CQ:image,id=" + message.MessageContent["file"].(string) + "]"
+			resStr += "[CQ:image,file=" + message.MessageContent["file"].(string) + "]"
 		case "record":
-			resStr += "[CQ:record,id=" + message.MessageContent["file"].(string) + "]"
+			resStr += "[CQ:record,file=" + message.MessageContent["file"].(string) + "]"
 		case "at":
 			resStr += "[CQ:at,qq=" + message.MessageContent["qq"].(string) + "]"
 		case "reply":
