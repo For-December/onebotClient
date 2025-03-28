@@ -9,4 +9,6 @@ type BotActionAPIInterface interface {
 	SendGroupCqMessage(groupId int64, cqMessage string, callback ...func(messageId int64))
 	RecallMessage(messageId int64)
 	GetNextContext() *msg.GroupMessageContext
+
+	//FetchGroupHistories(groupId int64, messageId string)
 }
