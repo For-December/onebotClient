@@ -12,6 +12,10 @@ type GroupMessageChain struct {
 	messages []CommonMessage
 }
 
+func (receiver *GroupMessageChain) GetMsg() []CommonMessage {
+	return receiver.messages
+}
+
 type JsonTypeMessage struct {
 	Type string                 `json:"type"`
 	Data map[string]interface{} `json:"data"`
